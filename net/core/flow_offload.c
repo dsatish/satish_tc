@@ -169,7 +169,6 @@ EXPORT_SYMBOL(flow_rule_match_enc_opts);
 
 #define FLOW_UNMASKED_KEY_DISSECTOR_MATCH(__rule, __type, __out)	\
 	const struct flow_match *__m = &(__rule)->match;		\
-	struct flow_dissector *__md = (__m)->dissector;			\
 	struct flow_dissector *__d = (__m)->unmasked_key_dissector;	\
 									\
 	(__out)->key = skb_flow_dissector_target(__d, __type,		\
