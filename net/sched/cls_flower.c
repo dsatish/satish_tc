@@ -121,6 +121,7 @@ struct cls_fl_filter {
 	 */
 	refcount_t refcnt;
 	bool deleted;
+	struct flow_dissector unmasked_key_dissector;
 };
 
 static const struct rhashtable_params mask_ht_params = {
@@ -449,6 +450,9 @@ static int fl_hw_replace_filter(struct tcf_proto *tp,
 	cls_flower.rule->match.mask = &f->mask->key;
 	cls_flower.rule->match.key = &f->mkey;
 	cls_flower.classid = f->res.classid;
+	cls_flower.rule->match.unmasked_key = &f->key;
+	cls_flower.rule->match.unmasked_key_dissector =
+						&f->unmasked_key_dissector;
 
 	err = tc_setup_flow_action(&cls_flower.rule->action, &f->exts);
 	if (err) {
@@ -1585,6 +1589,38 @@ static void fl_init_dissector(struct flow_dissector *dissector,
 	skb_flow_dissector_init(dissector, keys, cnt);
 }
 
+static void fl_init_unmasked_key_dissector(struct flow_dissector *dissector)
+{
+	struct flow_dissector_key keys[FLOW_DISSECTOR_KEY_MAX];
+	size_t cnt = 0;
+
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_META, meta);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_CONTROL, control);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_BASIC, basic);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_ETH_ADDRS, eth);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_IPV4_ADDRS, ipv4);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_IPV6_ADDRS, ipv6);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_PORTS, tp);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_PORTS_RANGE, tp_range);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_IP, ip);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_TCP, tcp);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_ICMP, icmp);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_ARP, arp);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_MPLS, mpls);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_VLAN, vlan);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_CVLAN, cvlan);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_ENC_KEYID, enc_key_id);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_ENC_IPV4_ADDRS, enc_ipv4);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_ENC_IPV6_ADDRS, enc_ipv6);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_ENC_CONTROL, enc_control);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_ENC_PORTS, enc_tp);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_ENC_IP, enc_ip);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_ENC_OPTS, enc_opts);
+	FL_KEY_SET(keys, cnt, FLOW_DISSECTOR_KEY_CT, ct);
+
+	skb_flow_dissector_init(dissector, keys, cnt);
+}
+
 static struct fl_flow_mask *fl_create_new_mask(struct cls_fl_head *head,
 					       struct fl_flow_mask *mask)
 {
@@ -1811,6 +1847,8 @@ static int fl_change(struct net *net, struct sk_buff *in_skb,
 	err = fl_check_assign_mask(head, fnew, fold, mask);
 	if (err)
 		goto errout;
+
+	fl_init_unmasked_key_dissector(&fnew->unmasked_key_dissector);
 
 	err = fl_ht_insert_unique(fnew, fold, &in_ht);
 	if (err)

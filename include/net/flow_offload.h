@@ -11,6 +11,8 @@ struct flow_match {
 	struct flow_dissector	*dissector;
 	void			*mask;
 	void			*key;
+	void			*unmasked_key;
+	struct flow_dissector	*unmasked_key_dissector;
 };
 
 struct flow_match_meta {
@@ -117,6 +119,49 @@ void flow_rule_match_enc_opts(const struct flow_rule *rule,
 			      struct flow_match_enc_opts *out);
 void flow_rule_match_ct(const struct flow_rule *rule,
 			struct flow_match_ct *out);
+
+void flow_rule_match_unmasked_key_meta(const struct flow_rule *rule,
+				       struct flow_match_meta *out);
+void flow_rule_match_unmasked_key_basic(const struct flow_rule *rule,
+					struct flow_match_basic *out);
+void flow_rule_match_unmasked_key_control(const struct flow_rule *rule,
+					  struct flow_match_control *out);
+void flow_rule_match_unmasked_key_eth_addrs(const struct flow_rule *rule,
+					    struct flow_match_eth_addrs *out);
+void flow_rule_match_unmasked_key_vlan(const struct flow_rule *rule,
+				       struct flow_match_vlan *out);
+void flow_rule_match_unmasked_key_cvlan(const struct flow_rule *rule,
+					struct flow_match_vlan *out);
+void flow_rule_match_unmasked_key_ipv4_addrs(const struct flow_rule *rule,
+					     struct flow_match_ipv4_addrs *out);
+void flow_rule_match_unmasked_key_ipv6_addrs(const struct flow_rule *rule,
+					     struct flow_match_ipv6_addrs *out);
+void flow_rule_match_unmasked_key_ip(const struct flow_rule *rule,
+				     struct flow_match_ip *out);
+void flow_rule_match_unmasked_key_ports(const struct flow_rule *rule,
+					struct flow_match_ports *out);
+void flow_rule_match_unmasked_key_tcp(const struct flow_rule *rule,
+				      struct flow_match_tcp *out);
+void flow_rule_match_unmasked_key_icmp(const struct flow_rule *rule,
+				       struct flow_match_icmp *out);
+void flow_rule_match_unmasked_key_mpls(const struct flow_rule *rule,
+				       struct flow_match_mpls *out);
+void flow_rule_match_unmasked_key_enc_control(const struct flow_rule *rule,
+					      struct flow_match_control *out);
+void flow_rule_match_unmasked_key_enc_ipv4_addrs(const struct flow_rule *rule,
+					    struct flow_match_ipv4_addrs *out);
+void flow_rule_match_unmasked_key_enc_ipv6_addrs(const struct flow_rule *rule,
+					    struct flow_match_ipv6_addrs *out);
+void flow_rule_match_unmasked_key_enc_ip(const struct flow_rule *rule,
+					 struct flow_match_ip *out);
+void flow_rule_match_unmasked_key_enc_ports(const struct flow_rule *rule,
+					    struct flow_match_ports *out);
+void flow_rule_match_unmasked_key_enc_keyid(const struct flow_rule *rule,
+					    struct flow_match_enc_keyid *out);
+void flow_rule_match_unmasked_key_enc_opts(const struct flow_rule *rule,
+					   struct flow_match_enc_opts *out);
+void flow_rule_match_unmasked_key_ct(const struct flow_rule *rule,
+				     struct flow_match_ct *out);
 
 enum flow_action_id {
 	FLOW_ACTION_ACCEPT		= 0,

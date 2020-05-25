@@ -167,6 +167,179 @@ void flow_rule_match_enc_opts(const struct flow_rule *rule,
 }
 EXPORT_SYMBOL(flow_rule_match_enc_opts);
 
+#define FLOW_UNMASKED_KEY_DISSECTOR_MATCH(__rule, __type, __out)	\
+	const struct flow_match *__m = &(__rule)->match;		\
+	struct flow_dissector *__md = (__m)->dissector;			\
+	struct flow_dissector *__d = (__m)->unmasked_key_dissector;	\
+									\
+	(__out)->key = skb_flow_dissector_target(__d, __type,		\
+						(__m)->unmasked_key);	\
+	(__out)->mask = skb_flow_dissector_target(__d, __type,		\
+						(__m)->mask);		\
+
+void flow_rule_match_unmasked_key_meta(const struct flow_rule *rule,
+				       struct flow_match_meta *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_META, out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_meta);
+
+void
+flow_rule_match_unmasked_key_basic(const struct flow_rule *rule,
+				   struct flow_match_basic *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_BASIC, out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_basic);
+
+void flow_rule_match_unmasked_key_control(const struct flow_rule *rule,
+					  struct flow_match_control *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_CONTROL,
+					  out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_control);
+
+void flow_rule_match_unmasked_key_eth_addrs(const struct flow_rule *rule,
+					    struct flow_match_eth_addrs *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_ETH_ADDRS,
+					  out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_eth_addrs);
+
+void flow_rule_match_unmasked_key_vlan(const struct flow_rule *rule,
+				       struct flow_match_vlan *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_VLAN, out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_vlan);
+
+void flow_rule_match_unmasked_key_cvlan(const struct flow_rule *rule,
+					struct flow_match_vlan *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_CVLAN, out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_cvlan);
+
+void flow_rule_match_unmasked_key_ipv4_addrs(const struct flow_rule *rule,
+					     struct flow_match_ipv4_addrs *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_IPV4_ADDRS,
+					  out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_ipv4_addrs);
+
+void flow_rule_match_unmasked_key_ipv6_addrs(const struct flow_rule *rule,
+					     struct flow_match_ipv6_addrs *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_IPV6_ADDRS,
+					  out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_ipv6_addrs);
+
+void flow_rule_match_unmasked_key_ip(const struct flow_rule *rule,
+				     struct flow_match_ip *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_IP, out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_ip);
+
+void flow_rule_match_unmasked_key_ports(const struct flow_rule *rule,
+					struct flow_match_ports *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_PORTS, out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_ports);
+
+void flow_rule_match_unmasked_key_tcp(const struct flow_rule *rule,
+				      struct flow_match_tcp *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_TCP, out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_tcp);
+
+void flow_rule_match_unmasked_key_icmp(const struct flow_rule *rule,
+				       struct flow_match_icmp *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_ICMP, out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_icmp);
+
+void flow_rule_match_unmasked_key_mpls(const struct flow_rule *rule,
+				       struct flow_match_mpls *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_MPLS, out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_mpls);
+
+void flow_rule_match_unmasked_key_enc_control(const struct flow_rule *rule,
+					      struct flow_match_control *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_ENC_CONTROL,
+					  out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_enc_control);
+
+void
+flow_rule_match_unmasked_key_enc_ipv4_addrs(const struct flow_rule *rule,
+					    struct flow_match_ipv4_addrs *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule,
+					  FLOW_DISSECTOR_KEY_ENC_IPV4_ADDRS,
+					  out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_enc_ipv4_addrs);
+
+void
+flow_rule_match_unmasked_key_enc_ipv6_addrs(const struct flow_rule *rule,
+					    struct flow_match_ipv6_addrs *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule,
+					  FLOW_DISSECTOR_KEY_ENC_IPV6_ADDRS,
+					  out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_enc_ipv6_addrs);
+
+void flow_rule_match_unmasked_key_enc_ip(const struct flow_rule *rule,
+					 struct flow_match_ip *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_ENC_IP, out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_enc_ip);
+
+void flow_rule_match_unmasked_key_enc_ports(const struct flow_rule *rule,
+					    struct flow_match_ports *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_ENC_PORTS,
+					  out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_enc_ports);
+
+void flow_rule_match_unmasked_key_enc_keyid(const struct flow_rule *rule,
+					    struct flow_match_enc_keyid *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_ENC_KEYID,
+					  out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_enc_keyid);
+
+void flow_rule_match_unmasked_key_enc_opts(const struct flow_rule *rule,
+					   struct flow_match_enc_opts *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_ENC_OPTS,
+					  out);
+}
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_enc_opts);
+
+void flow_rule_match_unmasked_key_ct(const struct flow_rule *rule,
+				     struct flow_match_ct *out)
+{
+	FLOW_UNMASKED_KEY_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_CT, out);
+}
+
+EXPORT_SYMBOL(flow_rule_match_unmasked_key_ct);
+
 struct flow_action_cookie *flow_action_cookie_create(void *data,
 						     unsigned int len,
 						     gfp_t gfp)
